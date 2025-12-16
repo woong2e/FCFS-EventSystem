@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # 1. Nginx (로드밸런서 + SSL)
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/usr/share/nginx/html
+    networks:
+      - web
+    depends_on:
+      - app
+    restart: always
+
+  # 2. Certbot (SSL 인증서 발급/갱신)
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    entrypoint: >
+      sh -c "while :; do
+      certbot renew --webroot -w /var/www/certbot --quiet;
+      sleep 12h;
+      done"
+    depends_on:
+      - nginx
+    restart: always
+
+  # 3. Nginx Reloader (인증서 갱신 감지)
+  nginx-reloader:
+    image: docker:27-cli
+    container_name: nginx-reloader
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - certbot-etc:/etc/letsencrypt:ro
+    entrypoint: >
+      sh -c 'FILE=/etc/letsencrypt/live/woong2e-prod.com/fullchain.pem;
+      PREV="$(cksum "$$FILE" 2>/dev/null || true)";
+      while :; do
+        CURR="$(cksum "$$FILE" 2>/dev/null || true)";
+        if [ "$$CURR" != "$$PREV" ] && [ -n "$$CURR" ]; then
+          echo "[reloader] cert changed -> nginx reload";
+          docker exec nginx nginx -s reload || true;
+          PREV="$$CURR";
+        fi;
+        sleep 300;
+      done'
+    depends_on:
+      - nginx
+    restart: always
+    networks:
+      - web
+
+  # 4. Spring Boot App (Scale-out)
+  app:
+    image: ${DOCKER_HUB_USERNAME}/couponsystem:latest
+    restart: always
+    deploy:
+      replicas: 2
+    env_file:
+      - .env
+    environment:
+      # t3.medium (4GB) 최적화 설정
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx800m
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
+
+volumes:
+  certbot-etc:
+  certbot-www:
