@@ -1,7 +1,7 @@
 name: Build & Deploy to EC2
 
 on:
-  push:
+  pull_request:
     branches: [main]
 
 permissions:
