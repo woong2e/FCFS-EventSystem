@@ -2,17 +2,27 @@ version: '3.8'
 
 services:
   # 1. MySQL Exporter (RDS)
-  mysqld-exporter:
-    image: prom/mysqld-exporter
-    container_name: mysqld-exporter
+  mysql-exporter:
+    image: prom/mysqld-exporter:v0.18.0
+    container_name: mysqld_exporter
+    # 1. .env 파일의 변수를 컨테이너 환경 변수로 주입
     environment:
-      # ✅ RDS 접속 정보 (형식 주의: user:password@(host:port)/)
-      - DATA_SOURCE_NAME=${DATABASE_USERNAME}:${DATABASE_PASSWORD}@(${DATABASE_HOST}:3306)/
+      - MYSQL_USER=${DATABASE_USERNAME}      # .env의 DB_USER
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD} # .env의 DB_PASS
+      - MYSQL_HOST=${DATABASE_HOST} # 호스트
     ports:
-      - "9104:9104" # 외부(Prometheus)에서 접근할 포트
-    networks:
-      - app-network
-    restart: always
+      - "9104:9104"
+    # 2. 실행 명령을 재정의하여 설정 파일을 동적으로 생성 후 실행
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "[client]" > /.my.cnf
+        echo "user=$$MYSQL_USER" >> /.my.cnf
+        echo "password=$$MYSQL_PASSWORD" >> /.my.cnf
+        echo "host=$$MYSQL_HOST" >> /.my.cnf
+
+        exec /bin/mysqld_exporter --config.my-cnf=/.my.cnf
 
 networks:
   app-network:
