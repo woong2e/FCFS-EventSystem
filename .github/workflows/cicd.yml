@@ -79,7 +79,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          source: "docker-compose/docker-compose.yml,nginx/nginx.conf,deploy/deploy.sh"
+          source: "docker-compose/*,nginx/*,deploy/*"
           target: "/home/${{ secrets.AWS_EC2_USER }}/deploy"
           strip_components: 1
 
