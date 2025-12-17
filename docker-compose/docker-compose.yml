@@ -71,8 +71,10 @@ services:
       - .env
     environment:
       - JAVA_TOOL_OPTIONS=-Xms512m -Xmx800m
+    ports:
+      - "8081-8082:8080"
     networks:
-      - app-network # 👈 변경됨
+      - app-network
 
 # ✅ 네트워크 설정 변경
 networks:
