@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. Nginx (로드밸런서 + SSL)
+  # 1. Nginx
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -13,12 +13,12 @@ services:
       - certbot-etc:/etc/letsencrypt
       - certbot-www:/usr/share/nginx/html
     networks:
-      - web
+      - app-network
     depends_on:
       - app
     restart: always
 
-  # 2. Certbot (SSL 인증서 발급/갱신)
+  # 2. Certbot
   certbot:
     image: certbot/certbot:latest
     container_name: certbot
@@ -33,8 +33,10 @@ services:
     depends_on:
       - nginx
     restart: always
+    networks:
+      - app-network
 
-  # 3. Nginx Reloader (인증서 갱신 감지)
+  # 3. Nginx Reloader
   nginx-reloader:
     image: docker:27-cli
     container_name: nginx-reloader
@@ -57,9 +59,9 @@ services:
       - nginx
     restart: always
     networks:
-      - web
+      - app-network
 
-  # 4. Spring Boot App (Scale-out)
+  # 4. Spring Boot App
   app:
     image: ${DOCKER_HUB_USERNAME}/couponsystem:latest
     restart: always
@@ -68,14 +70,14 @@ services:
     env_file:
       - .env
     environment:
-      # t3.medium (4GB) 최적화 설정
       - JAVA_TOOL_OPTIONS=-Xms512m -Xmx800m
     networks:
-      - web
+      - app-network # 👈 변경됨
 
+# ✅ 네트워크 설정 변경
 networks:
-  web:
-    driver: bridge
+  app-network:
+    external: ture
 
 volumes:
   certbot-etc:
