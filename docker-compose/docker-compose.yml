@@ -77,7 +77,7 @@ services:
 # ✅ 네트워크 설정 변경
 networks:
   app-network:
-    external: ture
+    external: true
 
 volumes:
   certbot-etc:
