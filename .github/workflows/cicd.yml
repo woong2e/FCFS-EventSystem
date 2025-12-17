@@ -66,6 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker-build-and-push
 
+    environment: production
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -77,19 +79,24 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          # ✅ 로컬 경로를 콤마로 구분하여 지정
           source: "docker-compose/docker-compose.yml,nginx/nginx.conf,deploy/deploy.sh"
           target: "/home/${{ secrets.AWS_EC2_USER }}/deploy"
           strip_components: 1
 
-      # (2) 서버 접속 및 배포 스크립트 실행
+      # (2) 서버 접속, .env 생성 및 배포 스크립트 실행
       - name: Execute Deploy Script
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          envs: ENV_FILE_CONTENT
           script: |
             cd /home/${{ secrets.AWS_EC2_USER }}/deploy
+
+            echo "$ENV_FILE_CONTENT" > .env
+
             chmod +x deploy.sh
             ./deploy.sh
