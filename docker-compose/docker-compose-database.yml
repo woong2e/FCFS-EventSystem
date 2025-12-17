@@ -17,12 +17,14 @@ services:
       - /bin/sh
       - -c
       - |
-        echo "[client]" > /.my.cnf
-        echo "user=$$MYSQL_USER" >> /.my.cnf
-        echo "password=$$MYSQL_PASSWORD" >> /.my.cnf
-        echo "host=$$MYSQL_HOST" >> /.my.cnf
-
-        exec /bin/mysqld_exporter --config.my-cnf=/.my.cnf
+        # 1. 권한이 있는 /tmp 폴더에 설정 파일 생성
+        echo "[client]" > /tmp/my.cnf
+        echo "user=$$MYSQL_USER" >> /tmp/my.cnf
+        echo "password=$$MYSQL_PASSWORD" >> /tmp/my.cnf
+        echo "host=$$MYSQL_HOST" >> /tmp/my.cnf
+        
+        # 2. 생성된 파일을 읽도록 경로 지정 수정
+        exec /bin/mysqld_exporter --config.my-cnf=/tmp/my.cnf
 
 networks:
   app-network:
