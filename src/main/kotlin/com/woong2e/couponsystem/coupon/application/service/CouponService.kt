@@ -5,8 +5,11 @@ import com.woong2e.couponsystem.coupon.application.response.CouponResponse
 import com.woong2e.couponsystem.coupon.domain.entity.Coupon
 import com.woong2e.couponsystem.coupon.domain.repository.CouponRepository
 import com.woong2e.couponsystem.coupon.domain.repository.IssuedCouponRepository
+import com.woong2e.couponsystem.coupon.status.CouponErrorStatus
+import com.woong2e.couponsystem.global.exception.CustomException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class CouponService(
@@ -28,5 +31,16 @@ class CouponService(
             totalQuantity = saved.totalQuantity,
             issuedQuantity = saved.issuedQuantity
         )
+    }
+
+    @Transactional
+    fun delete(couponId: UUID) {
+        val coupon = couponRepository.findById(couponId)
+            .orElseThrow { CustomException(CouponErrorStatus.COUPON_NOT_FOUND) }
+
+        // (Bulk Delete)
+        issuedCouponRepository.deleteAllByCouponId(couponId)
+
+        couponRepository.delete(coupon)
     }
 }

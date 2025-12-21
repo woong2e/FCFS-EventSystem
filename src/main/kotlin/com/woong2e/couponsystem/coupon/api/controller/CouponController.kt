@@ -11,11 +11,14 @@ import com.woong2e.couponsystem.global.exception.CustomException
 import com.woong2e.couponsystem.global.response.ApiResponse
 import com.woong2e.couponsystem.global.response.status.SuccessStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/coupons")
@@ -42,5 +45,11 @@ class CouponController(
 
         val response = couponIssueService.issue(request.couponId, request.userId)
         return ApiResponse.onSuccess(SuccessStatus.OK, response)
+    }
+
+    @DeleteMapping("/{couponId}")
+    fun delete(@PathVariable couponId: UUID): ResponseEntity<ApiResponse<String>> {
+        couponService.delete(couponId)
+        return ApiResponse.onSuccess(SuccessStatus.NO_CONTENT)
     }
 }
