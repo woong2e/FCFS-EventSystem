@@ -9,4 +9,6 @@ interface CouponRepository {
     fun save(coupon: Coupon): Coupon
 
     fun findById(id: UUID): Optional<Coupon>
+
+    fun delete(coupon: Coupon)
 }

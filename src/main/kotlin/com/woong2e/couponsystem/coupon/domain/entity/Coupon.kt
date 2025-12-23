@@ -1,5 +1,7 @@
 package com.woong2e.couponsystem.coupon.domain.entity
 
+import com.woong2e.couponsystem.coupon.status.CouponErrorStatus
+import com.woong2e.couponsystem.global.exception.CustomException
 import com.woong2e.couponsystem.global.jpa.PrimaryKeyEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
@@ -18,7 +20,7 @@ class Coupon(
 
     fun issue() {
         if (!available()) {
-            throw IllegalArgumentException("재고가 모두 소진되었습니다.")
+            throw CustomException(CouponErrorStatus.COUPON_OUT_OF_STOCK)
         }
         this.issuedQuantity++
     }

@@ -28,8 +28,7 @@ echo "Start Application..."
 docker-compose -f docker-compose.yml pull app
 
 # (2) 컨테이너 실행
-#docker-compose -f docker-compose.yml up -d --scale app=2
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d --scale app=2
 
 # 5. 미사용 이미지 정리
 docker image prune -f

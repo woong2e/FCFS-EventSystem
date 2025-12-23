@@ -5,6 +5,7 @@ services:
   mysql-exporter:
     image: prom/mysqld-exporter:v0.18.0
     container_name: mysqld_exporter
+    restart: always
     # 1. .env 파일의 변수를 컨테이너 환경 변수로 주입
     environment:
       - MYSQL_USER=${DATABASE_USERNAME}      # .env의 DB_USER

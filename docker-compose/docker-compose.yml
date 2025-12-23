@@ -64,29 +64,17 @@ services:
   # 4. Spring Boot App
   app:
     image: ${DOCKER_HUB_USERNAME}/couponsystem:latest
-    container_name: couponsystem
     restart: always
+    deploy:
+      replicas: 2
     env_file:
       - .env
     environment:
-      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx512m
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx800m
     ports:
-      - "8080:8080"
+      - "8081-8082:8080"
     networks:
       - app-network
-#  app:
-#    image: ${DOCKER_HUB_USERNAME}/couponsystem:latest
-#    restart: always
-#    deploy:
-#      replicas: 2
-#    env_file:
-#      - .env
-#    environment:
-#      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx800m
-#    ports:
-#      - "8081-8082:8080"
-#    networks:
-#      - app-network
 
 # ✅ 네트워크 설정 변경
 networks:
