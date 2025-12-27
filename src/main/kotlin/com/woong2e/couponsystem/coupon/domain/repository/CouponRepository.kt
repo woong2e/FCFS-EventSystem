@@ -10,5 +10,9 @@ interface CouponRepository {
 
     fun findById(id: UUID): Optional<Coupon>
 
+    fun findByIdWithPessimisticLock(id: UUID): Optional<Coupon>
+
+    fun increaseIssuedQuantity(id: UUID): Int
+
     fun delete(coupon: Coupon)
 }
