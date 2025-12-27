@@ -12,7 +12,7 @@ class SemaphoreCouponIssueService(
 ) : CouponIssueService {
 
 
-    @Bulkhead(permits = 15, fair = true)
+    @Bulkhead(permits = 25, fair = true)
     override fun issue(couponId: UUID, userId: Long): CouponIssueResponse {
         return pessimisticLockCouponIssueService.issue(couponId, userId)
     }
