@@ -16,10 +16,13 @@ echo "🚀 배포 시작..."
 # 2. ✅ 공용 네트워크 생성
 docker network create app-network 2>/dev/null || true
 
-# 3. ✅ DB 인프라(Exporter 등) 배포
-echo "Start Database Infra..."
-docker-compose -f docker-compose-database.yml pull
-docker-compose -f docker-compose-database.yml up -d
+# 3. ✅DB & Redis 인프라 배포 (변경 사항이 있을 때만 재시작됨)
+if [ -f "docker-compose-database.yml" ]; then
+    docker-compose -f docker-compose-database.yml pull
+    docker-compose -f docker-compose-database.yml up -d
+else
+    echo "⚠️ docker-compose-database.yml 파일이 없습니다. DB 인프라 배포 스킵."
+fi
 
 # 4. App 및 Nginx 배포
 echo "Start Application..."

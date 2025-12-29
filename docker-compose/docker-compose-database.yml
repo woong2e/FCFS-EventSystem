@@ -27,6 +27,19 @@ services:
         # 2. 생성된 파일을 읽도록 경로 지정 수정
         exec /bin/mysqld_exporter --config.my-cnf=/tmp/my.cnf
 
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --bind 0.0.0.0 --appendonly yes --maxmemory 200mb --maxmemory-policy allkeys-lru
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - app-network
+
 networks:
   app-network:
     external: true
