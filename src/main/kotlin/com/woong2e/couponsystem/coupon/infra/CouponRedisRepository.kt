@@ -43,4 +43,10 @@ class CouponRedisRepository(
             userId.toString()                // ARGV
         )
     }
+
+    fun initCouponStock(couponId: String, quantity: Int) {
+        val stockKey = "coupon:$couponId:total_quantity"
+
+        redisTemplate.opsForValue().set(stockKey, quantity.toString())
+    }
 }

@@ -2,6 +2,7 @@ package com.woong2e.couponsystem.coupon.api.controller
 
 import com.woong2e.couponsystem.coupon.api.request.CouponCreateRequest
 import com.woong2e.couponsystem.coupon.api.request.CouponIssueRequest
+import com.woong2e.couponsystem.coupon.api.request.CouponStockInitRequest
 import com.woong2e.couponsystem.coupon.application.response.CouponIssueResponse
 import com.woong2e.couponsystem.coupon.application.response.CouponResponse
 import com.woong2e.couponsystem.coupon.application.service.CouponIssueService
@@ -45,6 +46,13 @@ class CouponController(
 
         val response = couponIssueService.issue(request.couponId, request.userId)
         return ApiResponse.onSuccess(SuccessStatus.OK, response)
+    }
+
+    @PostMapping("/init-stock")
+    fun initCouponStock(
+        @RequestBody request: CouponStockInitRequest
+    ) {
+        couponService.initCouponStock(request.couponId, request.quantity)
     }
 
     @DeleteMapping("/{couponId}")
