@@ -40,6 +40,16 @@ services:
     networks:
       - app-network
 
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis_exporter
+    environment:
+      - REDIS_ADDR=redis:6379
+    ports:
+      - "9121:9121"
+    networks:
+      - app-network
+
 networks:
   app-network:
     external: true
