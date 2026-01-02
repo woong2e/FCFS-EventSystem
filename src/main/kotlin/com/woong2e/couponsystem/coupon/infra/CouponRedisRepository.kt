@@ -3,6 +3,7 @@ package com.woong2e.couponsystem.coupon.infra
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.script.DefaultRedisScript
 import org.springframework.stereotype.Repository
+import java.time.Duration
 
 @Repository
 class CouponRedisRepository(
@@ -47,6 +48,9 @@ class CouponRedisRepository(
     fun initCouponStock(couponId: String, quantity: Int) {
         val stockKey = "coupon:$couponId:total_quantity"
 
-        redisTemplate.opsForValue().set(stockKey, quantity.toString())
-    }
+        redisTemplate.opsForValue().set(
+            stockKey,
+            quantity.toString(),
+            Duration.ofHours(1)
+        )    }
 }
