@@ -45,7 +45,7 @@ if [ -f "docker-compose.yml" ]; then
     docker-compose -f docker-compose.yml pull
 
     # (2) 컨테이너 실행
-    docker-compose -f docker-compose.yml up -d --remove-orphans --scale api-server=2
+    docker-compose -f docker-compose.yml up -d --scale api-server=2
 else
     echo "❌ docker-compose.yml 파일이 없습니다!"
     exit 1
