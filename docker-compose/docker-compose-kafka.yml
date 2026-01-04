@@ -10,7 +10,8 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'   # 사용자 지정 ID 유지
+      KAFKA_CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
       # 리스너 설정 (내부 통신용)
       KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093'
@@ -29,17 +30,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
       KAFKA_HEAP_OPTS: "-Xmx400m -Xms400m"
-
-    # 포맷팅 스크립트 추가
-    # meta.properties가 없으면 지정된 CLUSTER_ID로 포맷팅 후 실행
-    command: >
-      bash -c '
-      if [ ! -f /var/lib/kafka/data/meta.properties ]; then
-        echo "⏳ KRaft Storage Formatting (ID: $KAFKA_CLUSTER_ID)...";
-        kafka-storage format -t $KAFKA_CLUSTER_ID -c /etc/kafka/kafka.properties;
-      fi;
-      echo "🚀 Starting Kafka...";
-      /etc/confluent/docker/run'
 
     volumes:
       - ./kafka-data:/var/lib/kafka/data
