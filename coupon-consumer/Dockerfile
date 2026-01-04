@@ -1,5 +1,5 @@
 # coupon-consumer/Dockerfile
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
