@@ -6,29 +6,40 @@ services:
     container_name: kafka
     hostname: kafka
     environment:
-      # KRaft
+      # KRaft 설정
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'   # 절대 변경 금지
+      KAFKA_CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'   # 사용자 지정 ID 유지
 
-      # 내부 통신만 사용
+      # 리스너 설정 (내부 통신용)
       KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
 
-      # Data dir
+      # 데이터 경로
       KAFKA_LOG_DIRS: '/var/lib/kafka/data'
 
-      # single broker
+      # 브로커 설정
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
       KAFKA_HEAP_OPTS: "-Xmx400m -Xms400m"
+
+    # 포맷팅 스크립트 추가
+    # meta.properties가 없으면 지정된 CLUSTER_ID로 포맷팅 후 실행
+    command: >
+      bash -c '
+      if [ ! -f /var/lib/kafka/data/meta.properties ]; then
+        echo "⏳ KRaft Storage Formatting (ID: $KAFKA_CLUSTER_ID)..."
+        kafka-storage format -t $KAFKA_CLUSTER_ID -c /etc/kafka/kafka.properties
+      fi
+      echo "🚀 Starting Kafka..."
+      /etc/confluent/docker/run'
 
     volumes:
       - ./kafka-data:/var/lib/kafka/data
