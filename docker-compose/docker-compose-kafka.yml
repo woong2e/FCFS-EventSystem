@@ -35,10 +35,10 @@ services:
     command: >
       bash -c '
       if [ ! -f /var/lib/kafka/data/meta.properties ]; then
-        echo "⏳ KRaft Storage Formatting (ID: $KAFKA_CLUSTER_ID)..."
-        kafka-storage format -t $KAFKA_CLUSTER_ID -c /etc/kafka/kafka.properties
-      fi
-      echo "🚀 Starting Kafka..."
+        echo "⏳ KRaft Storage Formatting (ID: $KAFKA_CLUSTER_ID)...";
+        kafka-storage format -t $KAFKA_CLUSTER_ID -c /etc/kafka/kafka.properties;
+      fi;
+      echo "🚀 Starting Kafka...";
       /etc/confluent/docker/run'
 
     volumes:
