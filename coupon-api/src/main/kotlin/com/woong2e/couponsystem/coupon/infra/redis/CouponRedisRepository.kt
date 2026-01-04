@@ -1,4 +1,4 @@
-package main.kotlin.com.woong2e.couponsystem.coupon.infra
+package main.kotlin.com.woong2e.couponsystem.coupon.infra.redis
 
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.script.DefaultRedisScript

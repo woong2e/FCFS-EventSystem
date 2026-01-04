@@ -1,4 +1,4 @@
-package main.kotlin.com.woong2e.couponsystem.coupon.infra
+package main.kotlin.com.woong2e.couponsystem.coupon.infra.redis
 
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.repository.AppliedUserRepository
 import org.springframework.data.redis.core.RedisTemplate

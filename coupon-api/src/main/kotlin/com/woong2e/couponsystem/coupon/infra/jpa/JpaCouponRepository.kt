@@ -1,4 +1,4 @@
-package main.kotlin.com.woong2e.couponsystem.coupon.infra
+package main.kotlin.com.woong2e.couponsystem.coupon.infra.jpa
 
 import jakarta.persistence.LockModeType
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.entity.Coupon

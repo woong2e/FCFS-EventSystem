@@ -5,7 +5,7 @@ import main.kotlin.com.woong2e.couponsystem.coupon.application.response.CouponRe
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.entity.Coupon
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.repository.CouponRepository
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.repository.IssuedCouponRepository
-import main.kotlin.com.woong2e.couponsystem.coupon.infra.CouponRedisRepository
+import main.kotlin.com.woong2e.couponsystem.coupon.infra.redis.CouponRedisRepository
 import main.kotlin.com.woong2e.couponsystem.coupon.status.CouponErrorStatus
 import main.kotlin.com.woong2e.couponsystem.global.exception.CustomException
 import org.springframework.stereotype.Service
