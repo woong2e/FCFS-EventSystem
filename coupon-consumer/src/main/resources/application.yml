@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: couponsystem
+  profiles:
+    active: local # 기본적으로 'local' 프로필을 사용 (RDS 쓸 땐 'prod'로 변경)
