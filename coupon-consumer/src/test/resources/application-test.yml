@@ -21,5 +21,9 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+    consumer:
+      group-id: test-group
+      auto-offset-reset: latest
+      enable-auto-commit: true
     listener:
-      auto-startup: false
+      ack-mode: record
