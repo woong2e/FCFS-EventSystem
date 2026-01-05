@@ -35,6 +35,8 @@ class KafkaConsumerConfig(
 
         props[JsonDeserializer.TRUSTED_PACKAGES] = "*"
 
+        props[JsonDeserializer.USE_TYPE_INFO_HEADERS] = false
+
         return DefaultKafkaConsumerFactory(props)
     }
 
