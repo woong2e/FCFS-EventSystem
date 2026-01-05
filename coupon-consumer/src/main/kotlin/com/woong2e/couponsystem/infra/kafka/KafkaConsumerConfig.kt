@@ -1,5 +1,6 @@
 package main.kotlin.com.woong2e.couponsystem.infra.kafka
 
+import main.kotlin.com.woong2e.couponsystem.coupon.consumer.event.CouponIssueEvent
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
@@ -35,7 +36,9 @@ class KafkaConsumerConfig(
 
         props[JsonDeserializer.TRUSTED_PACKAGES] = "*"
 
-        props[JsonDeserializer.USE_TYPE_INFO_HEADERS] = false
+        props[JsonDeserializer.USE_TYPE_INFO_HEADERS] = true
+        props[JsonDeserializer.TYPE_MAPPINGS] =
+            "main.kotlin.com.woong2e.couponsystem.coupon.application.event.CouponIssueEvent:" + CouponIssueEvent::class.java.name
 
         return DefaultKafkaConsumerFactory(props)
     }
