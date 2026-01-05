@@ -87,6 +87,8 @@ services:
       - .env
     environment:
       - JAVA_TOOL_OPTIONS=-Xms400m -Xmx400m
+    ports:
+      - "8083:8081"
     networks:
       - app-network
 
