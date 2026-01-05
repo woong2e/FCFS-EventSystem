@@ -1,6 +1,5 @@
 package main.kotlin.com.woong2e.couponsystem.coupon.consumer.listener
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import main.kotlin.com.woong2e.couponsystem.coupon.application.service.CouponIssueWorkerService
 import main.kotlin.com.woong2e.couponsystem.coupon.consumer.event.CouponIssueEvent
 import org.slf4j.LoggerFactory

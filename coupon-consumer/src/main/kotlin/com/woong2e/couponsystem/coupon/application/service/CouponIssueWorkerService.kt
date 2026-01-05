@@ -2,9 +2,11 @@ package main.kotlin.com.woong2e.couponsystem.coupon.application.service
 
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.entity.IssuedCoupon
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.repository.IssuedCouponRepository
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
+@Service
 class CouponIssueWorkerService(
     private val issuedCouponRepository: IssuedCouponRepository
 ) {
