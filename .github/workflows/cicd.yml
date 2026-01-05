@@ -40,26 +40,42 @@ jobs:
       - name: Build & Run Tests
         run: ./gradlew clean build
 
-      - name: Upload Build Artifact
+  # [API] JAR 파일 업로드
+      - name: Upload API Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
-          path: build/libs/*.jar
+          name: api-jar
+          path: coupon-api/build/libs/*.jar
+
+  # [Consumer] JAR 파일 업로드
+      - name: Upload Consumer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-jar
+          path: coupon-consumer/build/libs/*.jar
 
   # 2. 도커 이미지 빌드 및 푸시
   docker-build-and-push:
-    name: Build & Push Docker Image
+    name: Build & Push Docker Images
     runs-on: ubuntu-latest
     needs: build-and-test
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Build Artifact
+      # (1) API JAR 다운로드
+      - name: Download API Artifact
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
-          path: build/libs/
+          name: api-jar
+          path: coupon-api/build/libs/
+
+      # (2) Consumer JAR 다운로드
+      - name: Download Consumer Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: consumer-jar
+          path: coupon-consumer/build/libs/
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -67,10 +83,17 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build and Push Docker Image
+      # (3) API 이미지 빌드 & 푸시
+      - name: Build & Push API Image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/couponsystem:latest .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/couponsystem:latest
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/coupon-api:latest -f coupon-api/Dockerfile coupon-api
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/coupon-api:latest
+
+      # (4) Consumer 이미지 빌드 & 푸시
+      - name: Build & Push Consumer Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/coupon-consumer:latest -f coupon-consumer/Dockerfile coupon-consumer
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/coupon-consumer:latest
 
   # 3. 서버 배포
   deploy:
@@ -84,18 +107,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # (1) 설정 파일들 서버로 전송 (SCP)
+      # (1) 설정 파일 전송 (docker-compose 폴더 등)
       - name: Copy Config Files via SCP
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          # docker-compose 폴더, nginx, deploy 스크립트 등 필요한 파일 전송
           source: "docker-compose/*,nginx/*,deploy/*"
           target: "/home/${{ secrets.AWS_EC2_USER }}/deploy"
           strip_components: 1
 
-      # (2) 서버 접속, .env 생성 및 배포 스크립트 실행
+      # (2) 배포 스크립트 실행
       - name: Execute Deploy Script
         uses: appleboy/ssh-action@v1.0.3
         env:
@@ -107,8 +131,14 @@ jobs:
           envs: ENV_FILE_CONTENT
           script: |
             cd /home/${{ secrets.AWS_EC2_USER }}/deploy
-
+            
+            # .env 파일 생성
             echo "$ENV_FILE_CONTENT" > .env
-
+            
+            # 스크립트 위치 확인 및 실행
+            if [ -f "deploy/deploy.sh" ]; then
+                cd deploy
+            fi
+            
             chmod +x deploy.sh
             ./deploy.sh
