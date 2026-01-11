@@ -4,10 +4,16 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      acks: all
+      acks: all # 데이터 유실 방지 (필수)
       retries: 10
+      # 배치 크기 증가 (기본 16KB -> 64KB)
+      batch-size: 65536
+      # 압축 알고리즘 (CPU 부하가 적고 속도가 빠른 lz4 권장)
+      compression-type: lz4
       properties:
         enable.idempotence: true
+        # 5ms 동안 기다렸다가 모아서 발송
+        linger.ms: 5
 
   datasource:
     url: ${DATABASE_URL}
