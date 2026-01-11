@@ -29,7 +29,7 @@ class KafkaProducerConfig(
         props[ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG] = kafkaProperties.producer.properties["enable.idempotence"] ?: true
 
         props[ProducerConfig.LINGER_MS_CONFIG] = 5
-        props[ProducerConfig.BATCH_SIZE_CONFIG] = kafkaProperties.producer.batchSize
+        props[ProducerConfig.BATCH_SIZE_CONFIG] = 65536
 
         props[ProducerConfig.COMPRESSION_TYPE_CONFIG] = kafkaProperties.producer.compressionType
 
