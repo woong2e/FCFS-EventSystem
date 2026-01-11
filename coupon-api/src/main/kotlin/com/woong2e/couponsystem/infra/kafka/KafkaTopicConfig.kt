@@ -15,4 +15,12 @@ class KafkaTopicConfig {
             .replicas(1)
             .build()
     }
+
+    @Bean
+    fun couponCreateDltTopic(): NewTopic {
+        return TopicBuilder.name("coupon-issue-dlt-topic")
+            .partitions(3)
+            .replicas(1)
+            .build()
+    }
 }
