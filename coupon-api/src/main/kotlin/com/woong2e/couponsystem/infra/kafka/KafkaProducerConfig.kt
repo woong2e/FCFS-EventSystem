@@ -15,6 +15,11 @@ class KafkaProducerConfig(
     private val kafkaProperties: KafkaProperties
 ) {
 
+    companion object {
+        private const val DEFAULT_LINGER_MS = 50
+        private const val DEFAULT_BATCH_SIZE = 1000000
+    }
+
     @Bean
     fun producerFactory(): ProducerFactory<String, Any> {
         val props = HashMap<String, Any>()
@@ -28,8 +33,8 @@ class KafkaProducerConfig(
         props[ProducerConfig.ACKS_CONFIG] = kafkaProperties.producer.acks
         props[ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG] = kafkaProperties.producer.properties["enable.idempotence"] ?: true
 
-        props[ProducerConfig.LINGER_MS_CONFIG] = 5
-        props[ProducerConfig.BATCH_SIZE_CONFIG] = 65536
+        props[ProducerConfig.LINGER_MS_CONFIG] = DEFAULT_LINGER_MS
+        props[ProducerConfig.BATCH_SIZE_CONFIG] = DEFAULT_BATCH_SIZE
 
         props[ProducerConfig.COMPRESSION_TYPE_CONFIG] = kafkaProperties.producer.compressionType
 
