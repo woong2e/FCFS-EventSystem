@@ -48,6 +48,12 @@ spring:
     redis:
       host: redis
       port: 6379
+      lettuce:
+        pool:
+          max-active: 64
+          max-idle: 32
+          min-idle: 16
+          max-wait: 3000ms
 
 management:
   endpoints:
