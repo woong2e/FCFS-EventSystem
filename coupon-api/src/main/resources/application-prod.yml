@@ -22,8 +22,8 @@ spring:
       compression-type: lz4
       properties:
         enable.idempotence: true
-        # 50ms 동안 기다렸다가 모아서 발송
-        linger.ms: 50
+        # 10ms 동안 기다렸다가 모아서 발송
+        linger.ms: 10
 
   datasource:
     url: ${DATABASE_URL}
