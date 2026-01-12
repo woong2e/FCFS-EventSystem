@@ -14,7 +14,7 @@ class IssuedCoupon(
     @Column(name = "coupon_id", nullable = false, columnDefinition = "BINARY(16)")
     val couponId: UUID,
 
-    @Column(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "user_id", nullable = false, columnDefinition = "BIGINT")
     val userId: Long
 ) : PrimaryKeyEntity() {
 
