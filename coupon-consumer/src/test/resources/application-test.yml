@@ -24,7 +24,7 @@ spring:
     consumer:
       group-id: test-group
       auto-offset-reset: latest
-      enable-auto-commit: true
+      enable-auto-commit: false
     listener:
       ack-mode: manual
       type: batch
