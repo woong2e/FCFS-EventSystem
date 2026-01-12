@@ -1,3 +1,8 @@
+server:
+  tomcat:
+    threads:
+      max: 50
+
 spring:
   kafka:
     bootstrap-servers: localhost:9092
