@@ -13,7 +13,8 @@ spring:
       auto-offset-reset: latest
       enable-auto-commit: false
     listener:
-      ack-mode: batch
+      ack-mode: manual
+      type: batch
 
   datasource:
     url: ${DATABASE_URL}

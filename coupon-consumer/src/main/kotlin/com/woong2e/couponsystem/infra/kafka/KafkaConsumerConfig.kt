@@ -50,7 +50,7 @@ class KafkaConsumerConfig(
 
         factory.setConcurrency(3)
         factory.isBatchListener = true
-        factory.containerProperties.ackMode = kafkaProperties.listener.ackMode ?: ContainerProperties.AckMode.BATCH
+        factory.containerProperties.ackMode = kafkaProperties.listener.ackMode ?: ContainerProperties.AckMode.MANUAL
         return factory
     }
 }
