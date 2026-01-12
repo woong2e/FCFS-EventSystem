@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param
 import java.util.Optional
 import java.util.UUID
 
-interface JpaCouponRepository : CouponRepository, JpaRepository<Coupon, UUID> {
+interface CouponJpaRepository : CouponRepository, JpaRepository<Coupon, UUID> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select c from Coupon c where c.id = :id")

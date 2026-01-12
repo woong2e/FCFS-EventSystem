@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import java.util.UUID
 
-interface JpaIssuedCouponRepository : IssuedCouponRepository, JpaRepository<IssuedCoupon, UUID> {
+interface IssuedCouponJpaRepository : IssuedCouponRepository, JpaRepository<IssuedCoupon, UUID> {
 
     @Modifying
     @Query("DELETE FROM IssuedCoupon ic WHERE ic.couponId = :couponId")

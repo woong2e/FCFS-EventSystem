@@ -1,9 +1,9 @@
-package main.kotlin.com.woong2e.couponsystem.coupon.infra.jpa
+package main.kotlin.com.woong2e.couponsystem.coupon.infra.persistence
 
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.entity.IssuedCoupon
 import main.kotlin.com.woong2e.couponsystem.coupon.domain.repository.IssuedCouponRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 
-interface JpaIssuedCouponRepository : IssuedCouponRepository, JpaRepository<IssuedCoupon, UUID> {
+interface IssuedCouponJpaRepository : IssuedCouponRepository, JpaRepository<IssuedCoupon, UUID> {
 }
