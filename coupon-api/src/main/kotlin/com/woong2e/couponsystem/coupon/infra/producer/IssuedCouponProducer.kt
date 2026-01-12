@@ -1,5 +1,6 @@
 package main.kotlin.com.woong2e.couponsystem.coupon.infra.producer
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import main.kotlin.com.woong2e.couponsystem.coupon.application.event.CouponIssueDltEvent
 import main.kotlin.com.woong2e.couponsystem.coupon.application.event.CouponIssueEvent
 import main.kotlin.com.woong2e.couponsystem.coupon.application.port.out.CouponIssueEventPublisher
@@ -11,7 +12,9 @@ import java.util.UUID
 
 @Component
 class IssuedCouponProducer(
-    private val kafkaTemplate: KafkaTemplate<String, Any>
+    // Value 타입을 String으로 명시 (직렬화 문제 해결 핵심)
+    private val kafkaTemplate: KafkaTemplate<String, String>,
+    private val objectMapper: ObjectMapper
 ) : CouponIssueEventPublisher {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -25,7 +28,14 @@ class IssuedCouponProducer(
         val event = CouponIssueEvent(couponId, userId)
         val key = userId.toString()
 
-        runCatching { kafkaTemplate.send(TOPIC, key, event) }
+        val messageJson = try {
+            objectMapper.writeValueAsString(event)
+        } catch (e: Exception) {
+            log.error("JSON serialization failed for event: $event", e)
+            return
+        }
+
+        runCatching { kafkaTemplate.send(TOPIC, key, messageJson) }
             .onFailure { ex ->
                 log.error("Kafka send() call failed -> send to DLT. couponId={}, userId={}", couponId, userId, ex)
                 sendToDlt(
@@ -49,25 +59,31 @@ class IssuedCouponProducer(
                             couponId,
                             userId
                         )
-                        return@whenComplete
-                    }
-
-                    log.error("Producer async send failed -> send to DLT. couponId={}, userId={}", couponId, userId, ex)
-                    sendToDlt(
-                        key = key,
-                        dltEvent = CouponIssueDltEvent(
-                            source = DltSource.PRODUCER,
-                            couponId = couponId,
-                            userId = userId,
-                            reason = ex.message ?: ex::class.java.simpleName
+                    } else {
+                        log.error("Producer async send failed -> send to DLT. couponId={}, userId={}", couponId, userId, ex)
+                        sendToDlt(
+                            key = key,
+                            dltEvent = CouponIssueDltEvent(
+                                source = DltSource.PRODUCER,
+                                couponId = couponId,
+                                userId = userId,
+                                reason = ex.message ?: ex::class.java.simpleName
+                            )
                         )
-                    )
+                    }
                 }
             }
     }
 
     private fun sendToDlt(key: String, dltEvent: CouponIssueDltEvent) {
-        kafkaTemplate.send(TOPIC_DLT, key, dltEvent).whenComplete { result, ex ->
+        val dltJson = try {
+            objectMapper.writeValueAsString(dltEvent)
+        } catch (e: Exception) {
+            log.error("Failed to serialize DLT event", e)
+            return
+        }
+
+        kafkaTemplate.send(TOPIC_DLT, key, dltJson).whenComplete { result, ex ->
             if (ex == null) {
                 log.warn(
                     "Sent to DLT: topic={}, partition={}, offset={}, source={}, couponId={}, userId={}",
