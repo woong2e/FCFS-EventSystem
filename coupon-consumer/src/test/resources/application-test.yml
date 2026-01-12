@@ -26,4 +26,4 @@ spring:
       auto-offset-reset: latest
       enable-auto-commit: true
     listener:
-      ack-mode: record
+      ack-mode: batch

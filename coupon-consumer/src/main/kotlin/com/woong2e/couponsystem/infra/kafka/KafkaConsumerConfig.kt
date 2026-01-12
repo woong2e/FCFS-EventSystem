@@ -49,7 +49,8 @@ class KafkaConsumerConfig(
         factory.consumerFactory = consumerFactory()
 
         factory.setConcurrency(3)
-        factory.containerProperties.ackMode = kafkaProperties.listener.ackMode ?: ContainerProperties.AckMode.RECORD
+        factory.isBatchListener = true
+        factory.containerProperties.ackMode = kafkaProperties.listener.ackMode ?: ContainerProperties.AckMode.BATCH
         return factory
     }
 }
