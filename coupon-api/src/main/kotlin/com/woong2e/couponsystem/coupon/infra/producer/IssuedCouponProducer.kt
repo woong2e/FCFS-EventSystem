@@ -12,7 +12,6 @@ import java.util.UUID
 
 @Component
 class IssuedCouponProducer(
-    // Value 타입을 String으로 명시 (직렬화 문제 해결 핵심)
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val objectMapper: ObjectMapper
 ) : CouponIssueEventPublisher {

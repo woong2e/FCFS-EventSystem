@@ -13,7 +13,7 @@ spring:
     bootstrap-servers: kafka:29092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: all # 데이터 유실 방지 (필수)
       retries: 10
       # 배치 크기 증가 (기본 16KB -> 1MB)
