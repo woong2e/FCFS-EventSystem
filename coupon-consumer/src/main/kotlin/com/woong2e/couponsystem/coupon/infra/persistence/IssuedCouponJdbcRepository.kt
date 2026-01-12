@@ -15,7 +15,7 @@ class IssuedCouponJdbcRepository(
 
     override fun batchInsert(coupons: List<IssuedCoupon>) {
         val sql = """
-            INSERT INTO issued_coupon (coupon_id, user_id, status, created_at, updated_at)
+            INSERT INTO issued_coupons (coupon_id, user_id, status, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?)
         """.trimIndent()
 
