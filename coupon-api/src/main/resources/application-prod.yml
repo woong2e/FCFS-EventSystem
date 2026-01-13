@@ -1,0 +1,71 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 50
+
+spring:
+  application:
+    name: coupon-api # 모니터링 시 식별용 이름
+  config:
+    activate:
+      on-profile: prod
+
+  # Kafka Producer 설정
+  kafka:
+    bootstrap-servers: kafka:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all # 데이터 유실 방지 (필수)
+      retries: 10
+      # 배치 크기 증가 (기본 16KB -> 1MB)
+      batch-size: 1000000
+      # 압축 알고리즘 (CPU 부하가 적고 속도가 빠른 lz4 권장)
+      compression-type: lz4
+      properties:
+        enable.idempotence: true
+        # 10ms 동안 기다렸다가 모아서 발송
+        linger.ms: 10
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+        use_sql_comments: false
+    hibernate:
+      ddl-auto: validate
+    defer-datasource-initialization: true
+    open-in-view: false
+    generate-ddl: false
+    show-sql: false
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 64
+          max-idle: 32
+          min-idle: 16
+          max-wait: 3000ms
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: coupon-api

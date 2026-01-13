@@ -52,3 +52,5 @@ out/
 /mysql-data-local/
 /src/main/resources/.env
 /src/main/resources/application.yml
+/coupon-consumer/src/main/resources/.env
+/coupon-api/src/main/resources/.env

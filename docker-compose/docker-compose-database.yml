@@ -49,6 +49,7 @@ services:
       - "9121:9121"
     networks:
       - app-network
+    restart: always
 
 networks:
   app-network:

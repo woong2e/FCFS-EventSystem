@@ -1,0 +1,46 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: coupon-worker-group
+      auto-offset-reset: latest
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual
+      type: batch
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: false
+    hibernate:
+      ddl-auto: validate
+    defer-datasource-initialization: true
+    open-in-view: false
+    generate-ddl: false
+    show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      max-active: 64
+      max-idle: 32
+      min-idle: 16
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
+  endpoint:
+    prometheus:
+      enabled: true

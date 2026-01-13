@@ -15,7 +15,7 @@ services:
     networks:
       - app-network
     depends_on:
-      - app
+      - api-server
     restart: always
 
   # 2. Certbot
@@ -61,22 +61,37 @@ services:
     networks:
       - app-network
 
-  # 4. Spring Boot App
-  app:
-    image: ${DOCKER_HUB_USERNAME}/couponsystem:latest
+  # 4. [API] Producer Server
+  api-server:
+    image: ${DOCKER_HUB_USERNAME}/coupon-api:latest
     restart: always
     deploy:
       replicas: 2
     env_file:
       - .env
     environment:
-      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx800m
+      - JAVA_TOOL_OPTIONS=-Xms512m -Xmx512m
     ports:
       - "8081-8082:8080"
     networks:
       - app-network
 
-# ✅ 네트워크 설정 변경
+  # 5. [Worker] Consumer Server
+  consumer-worker:
+    image: ${DOCKER_HUB_USERNAME}/coupon-consumer:latest
+    container_name: consumer-worker
+    restart: always
+    deploy:
+      replicas: 1
+    env_file:
+      - .env
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xms400m -Xmx400m
+    ports:
+      - "8083:8081"
+    networks:
+      - app-network
+
 networks:
   app-network:
     external: true
