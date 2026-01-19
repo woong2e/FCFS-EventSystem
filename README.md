@@ -49,6 +49,26 @@
 - **해결**: **Kafka 기반 Event-Driven 아키텍처**로 전환하여 비동기 Batch Insert 처리
 - **결과**: DB 부하를 격리하고 소비(Consume) 속도를 Throttling하여 시스템 안정성 및 최종 처리량 향상
 
+#### Throughput(TPS)
+|                     Before                     |             |                     After                      |
+|:----------------------------------------------:|:-----------:|:----------------------------------------------:|
+| <img src="assets/Throughput1.png" width="300"> |   &rarr;    | <img src="assets/Throughput2.png" width="300"> |
+
+#### Latency p95
+|                     Before                     |             |                     After                      |
+|:----------------------------------------------:|:-----------:|:----------------------------------------------:|
+|  <img src="assets/latency1.png" width="300">   |   &rarr;    |  <img src="assets/latency2.png" width="300">   |
+
+#### HikariCP Connection
+|                    Before                    |            |                    After                     |
+|:--------------------------------------------:|:----------:|:--------------------------------------------:|
+| <img src="assets/hikaricp1.png" width="300"> |   &rarr;   | <img src="assets/hikaricp2.png" width="300"> |
+
+#### QPS
+|                 Before                  |            |                    After                     |
+|:---------------------------------------:|:----------:|:--------------------------------------------:|
+| <img src="assets/qps1.png" width="300"> |   &rarr;   |   <img src="assets/qps2.png" width="300">    |
+
 <br>
 
 ## 4. 사용한 기술
